@@ -36,7 +36,7 @@ target_sources(StudioBolVocalManager PRIVATE
     PluginEditor.cpp
     PluginEditor.h
 )
-
+juce_generate_juce_header(StudioBolVocalManager)
 target_compile_features(StudioBolVocalManager PRIVATE cxx_std_17)
 target_compile_definitions(StudioBolVocalManager PUBLIC
     JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_VST3_CAN_REPLACE_VST2=0
