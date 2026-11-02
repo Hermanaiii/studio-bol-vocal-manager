@@ -1,0 +1,43 @@
+name: Build Studio Bol Vocal Manager (Windows VST3)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  build-vst3:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Configure x64 Release build
+        shell: pwsh
+        run: cmake -S . -B build -A x64
+
+      - name: Build VST3
+        shell: pwsh
+        run: cmake --build build --config Release --target StudioBolVocalManager_VST3 --parallel
+
+      - name: Package VST3 bundle
+        shell: pwsh
+        run: |
+          $plugin = Get-ChildItem -Path build -Filter '*.vst3' -Recurse | Where-Object { $_.PSIsContainer } | Select-Object -First 1
+          if (-not $plugin) { throw 'Build completed but no .vst3 bundle directory was found.' }
+          Compress-Archive -Path $plugin.FullName -DestinationPath 'Studio-Bol-Vocal-Manager-Windows-x64-VST3.zip' -Force
+          Get-FileHash 'Studio-Bol-Vocal-Manager-Windows-x64-VST3.zip' -Algorithm SHA256 | Format-List | Out-String | Set-Content 'SHA256.txt'
+
+      - name: Upload compiled plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: Studio-Bol-Vocal-Manager-Windows-x64-VST3
+          path: |
+            Studio-Bol-Vocal-Manager-Windows-x64-VST3.zip
+            SHA256.txt
+          if-no-files-found: error
+          retention-days: 30
