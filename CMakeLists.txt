@@ -31,10 +31,11 @@ juce_add_plugin(StudioBolVocalManager
 )
 
 target_sources(StudioBolVocalManager PRIVATE
-    Source/PluginProcessor.cpp
-    Source/PluginProcessor.h
-    Source/PluginEditor.cpp
-    Source/PluginEditor.h
+    PluginProcessor.cpp
+    PluginProcessor.h
+    PluginEditor.cpp
+    PluginEditor.h
+)
 )
 target_compile_features(StudioBolVocalManager PRIVATE cxx_std_17)
 target_compile_definitions(StudioBolVocalManager PUBLIC
